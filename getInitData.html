@@ -1,37 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Telegram InitData</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-    }
-    #output {
-      font-size: 14px;
-      white-space: pre-wrap;
-      word-break: break-all;
-      background: #f4f4f4;
-      padding: 10px;
-      border-radius: 8px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Telegram InitData</title>
+    <!-- 关键：引入 Telegram Web App 脚本 -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 15px; }
+        pre {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-  <h2>📦 Telegram InitData</h2>
-  <div id="output">加载中...</div>
+    <h1>Telegram InitData Viewer</h1>
+    <h2>Raw initData:</h2>
+    <pre id="init-data-raw">Loading...</pre>
+    <h2>Unsafe initData (for debugging):</h2>
+    <pre id="init-data-unsafe">Loading...</pre>
 
-  <script>
-    // 检查 Telegram WebApp 是否可用
-    window.addEventListener("DOMContentLoaded", function () {
-      try {
-        const initData = window.Telegram.WebApp.initData || '❌ 无法获取 initData';
-        document.getElementById('output').innerText = initData;
-      } catch (e) {
-        document.getElementById('output').innerText = '发生错误：' + e.message;
-      }
-    });
-  </script>
+    <script>
+        // 确保 Telegram WebApp 脚本加载完毕
+        window.addEventListener('load', () => {
+            const rawDataElement = document.getElementById('init-data-raw');
+            const unsafeDataElement = document.getElementById('init-data-unsafe');
+
+            // 检查是否在 Telegram 环境中
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+
+                // 告诉 Telegram Mini App 已经准备好
+                tg.ready();
+
+                const initData = tg.initData;
+                const initDataUnsafe = tg.initDataUnsafe;
+
+                if (initData) {
+                    rawDataElement.textContent = initData;
+                } else {
+                    rawDataElement.textContent = 'Error: Could not get initData.';
+                }
+
+                // 显示不安全的数据（包含用户信息等，方便查看）
+                unsafeDataElement.textContent = JSON.stringify(initDataUnsafe, null, 2);
+
+            } else {
+                const errorMessage = 'Error: Not running inside Telegram or script failed to load.';
+                rawDataElement.textContent = errorMessage;
+                unsafeDataElement.textContent = errorMessage;
+                alert(errorMessage); // 在普通浏览器中打开时会提示
+            }
+        });
+    </script>
 </body>
 </html>
