@@ -1,46 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Telegram InitData</title>
-    <meta charset="UTF-8" />
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-      body {
-        font-family: sans-serif;
-        background: #fff;
-        padding: 20px;
-        color: #000;
-      }
-      textarea {
-        width: 100%;
-        height: 120px;
-        margin-top: 10px;
-      }
-      button {
-        margin-top: 10px;
-        padding: 10px;
-        font-size: 16px;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>🔐 Telegram InitData 获取工具</h2>
-    <p>👇 以下是当前环境的 initData：</p>
-    <textarea id="initData" readonly></textarea>
-    <button onclick="copyInitData()">📋 复制 InitData</button>
+<head>
+  <meta charset="UTF-8">
+  <title>Telegram InitData</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    #output {
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>📦 Telegram InitData</h2>
+  <div id="output">加载中...</div>
 
-    <script>
-      const initDataRaw = window.Telegram.WebApp.initData || '未能获取 initData，请确保在 Telegram WebApp 中打开';
-      document.getElementById("initData").value = initDataRaw;
-
-      function copyInitData() {
-        navigator.clipboard.writeText(initDataRaw).then(() => {
-          alert("✅ 已复制！");
-        });
+  <script>
+    // 检查 Telegram WebApp 是否可用
+    window.addEventListener("DOMContentLoaded", function () {
+      try {
+        const initData = window.Telegram.WebApp.initData || '❌ 无法获取 initData';
+        document.getElementById('output').innerText = initData;
+      } catch (e) {
+        document.getElementById('output').innerText = '发生错误：' + e.message;
       }
-
-      // 自动展开 WebApp
-      Telegram.WebApp.ready();
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>
