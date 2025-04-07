@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Telegram InitData</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 15px; }
+        #initDataDisplay { word-break: break-all; white-space: pre-wrap; border: 1px solid #ccc; padding: 10px; background-color: #f5f5f5; margin-top: 10px; max-height: 400px; overflow-y: auto; }
+        button { padding: 10px 15px; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Telegram InitData</h1>
+    <p>如果下方为空，请确保你在 Telegram 内部打开此页面。</p>
+    <div id="initDataDisplay">加载中...</div>
+    <button onclick="copyInitData()">复制 InitData</button>
+
+    <script>
+        const initDataDisplay = document.getElementById('initDataDisplay');
+        let webAppData = '';
+        try {
+            Telegram.WebApp.ready();
+            webAppData = Telegram.WebApp.initData;
+            if (webAppData) {
+                initDataDisplay.textContent = webAppData;
+                console.log("Telegram InitData:", webAppData);
+            } else {
+                initDataDisplay.textContent = "错误：无法获取到 InitData。请确保在 Telegram 客户端内打开。";
+            }
+        } catch (e) {
+            initDataDisplay.textContent = "错误：无法初始化 Telegram SDK 或获取 InitData。\n" + e;
+            console.error("Error accessing Telegram WebApp SDK:", e);
+        }
+        function copyInitData() {
+            if (!webAppData) { alert('没有可复制的 InitData！'); return; }
+            navigator.clipboard.writeText(webAppData).then(function() {
+                alert('InitData 已复制到剪贴板！');
+            }, function(err) {
+                alert('复制失败: ' + err);
+                prompt("自动复制失败，请手动复制:", webAppData);
+            });
+        }
+    </script>
+</body>
+</html>
+Use code with caution.
+Html
